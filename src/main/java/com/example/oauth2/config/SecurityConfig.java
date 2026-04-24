@@ -59,20 +59,24 @@ public class SecurityConfig {
     }
 
     /**
-     * 默认安全过滤链：/hello、/login 公开访问，其余需认证
+     * 默认安全过滤链：/hello、/login、/h2-console 公开访问，其余需认证
      */
     @Bean
     @Order(2)
     public SecurityFilterChain defaultSecurityFilterChain(HttpSecurity http)
             throws Exception {
         http.authorizeHttpRequests(authorize -> authorize
-                        .requestMatchers("/hello", "/login", "/css/**", "/js/**").permitAll()
+                        .requestMatchers("/hello", "/login", "/css/**", "/js/**",
+                                "/h2-console/**").permitAll()
                         .anyRequest().authenticated()
                 )
                 .formLogin(form -> form
                         .loginPage("/login")
                         .permitAll()
-                );
+                )
+                // H2 控制台使用 iframe，需放行 frame-options 和 CSRF
+                .headers(headers -> headers.frameOptions(frame -> frame.sameOrigin()))
+                .csrf(csrf -> csrf.ignoringRequestMatchers("/h2-console/**"));
         return http.build();
     }
 

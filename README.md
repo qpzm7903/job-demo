@@ -4,7 +4,7 @@
 
 基于 Spring Authorization Server 构建的 OAuth2 授权服务。
 
-## 当前版本：v0.5.5
+## 当前版本：v0.5.6
 
 ### 能做什么
 - Spring Boot 3.2.x 应用可启动
@@ -16,12 +16,14 @@
 - `GET /oauth2/authorize` 授权码端点 + 最简登录页（Thymeleaf）
 - Access Token 有效期 30 分钟，Refresh Token 有效期 1 天
 - 单元测试覆盖（JUnit 5 + Spring Boot Test + JaCoCo），覆盖率 >= 60%
+- H2 控制台（`/h2-console`）开发环境可访问，已配置安全放行
+- 显式 H2 内存数据源配置（`jdbc:h2:mem:oauth2`）
 
 ### 如何运行
 
 ```bash
 mvn clean package -DskipTests
-java -jar target/oauth2-server-0.5.5.jar
+java -jar target/oauth2-server-0.5.6.jar
 ```
 
 ### 运行测试
@@ -56,6 +58,7 @@ curl http://localhost:8080/oauth2/jwks
 
 | 版本 | 说明 |
 |------|------|
+| v0.5.6 | 开发体验完善：H2 控制台安全配置、显式数据源配置、.gitignore 清理 |
 | v0.5.5 | 增强开发配置：H2 控制台、Security 日志、.gitignore 完善 |
 | v0.5.4 | 修复 README CI badge URL 为实际仓库地址 |
 | v0.5.3 | 添加 CI badge 到 README |
