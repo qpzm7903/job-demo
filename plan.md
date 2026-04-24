@@ -5,7 +5,7 @@
 | 版本 | 目标 | 状态 |
 |------|------|------|
 | v0.1.0 | Maven 骨架 + Spring Boot 3 可启动 + `GET /hello` | ✅ 已完成 |
-| v0.2.0 | 集成 Spring Authorization Server，配置 in-memory 客户端，暴露 `/oauth2/token` | ⬜ 待做 |
+| v0.2.0 | 集成 Spring Authorization Server，配置 in-memory 客户端，暴露 `/oauth2/token` | ✅ 已完成 |
 | v0.3.0 | 支持 `client_credentials` 授权流；JWT Token；`/oauth2/jwks` | ⬜ 待做 |
 | v0.4.0 | 支持 `authorization_code` 授权流 + 最简登录页（Thymeleaf） | ⬜ 待做 |
 | v0.5.0 | 为核心 Service / Controller 补单元测试，覆盖率 >= 60% | ⬜ 待做 |
