@@ -12,6 +12,7 @@
 | v0.5.1 | 修复测试健壮性：bad credentials 改为直接验证 401 状态码 | ✅ 已完成 |
 | v0.5.2 | 新增 GitHub Actions CI 工作流（Maven 构建 + 测试） | ✅ 已完成 |
 | v0.5.3 | README 添加 CI badge + 版本号更新 | ✅ 已完成 |
+| v0.5.4 | 修复 README CI badge URL 为实际仓库地址 | ✅ 已完成 |
 
 ## 技术栈
 
