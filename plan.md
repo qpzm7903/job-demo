@@ -13,6 +13,7 @@
 | v0.5.2 | 新增 GitHub Actions CI 工作流（Maven 构建 + 测试） | ✅ 已完成 |
 | v0.5.3 | README 添加 CI badge + 版本号更新 | ✅ 已完成 |
 | v0.5.4 | 修复 README CI badge URL 为实际仓库地址 | ✅ 已完成 |
+| v0.5.5 | 增强开发配置与忽略文件规则 | ✅ 已完成 |
 
 ## 技术栈
 

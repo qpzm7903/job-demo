@@ -4,7 +4,7 @@
 
 基于 Spring Authorization Server 构建的 OAuth2 授权服务。
 
-## 当前版本：v0.5.4
+## 当前版本：v0.5.5
 
 ### 能做什么
 - Spring Boot 3.2.x 应用可启动
@@ -21,7 +21,7 @@
 
 ```bash
 mvn clean package -DskipTests
-java -jar target/oauth2-server-0.5.4.jar
+java -jar target/oauth2-server-0.5.5.jar
 ```
 
 ### 运行测试
@@ -56,6 +56,7 @@ curl http://localhost:8080/oauth2/jwks
 
 | 版本 | 说明 |
 |------|------|
+| v0.5.5 | 增强开发配置：H2 控制台、Security 日志、.gitignore 完善 |
 | v0.5.4 | 修复 README CI badge URL 为实际仓库地址 |
 | v0.5.3 | 添加 CI badge 到 README |
 | v0.5.2 | 新增 GitHub Actions CI 工作流 |

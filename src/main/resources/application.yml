@@ -1,2 +1,13 @@
 server:
   port: 8080
+
+logging:
+  level:
+    org.springframework.security: INFO
+    org.springframework.security.oauth2: INFO
+
+spring:
+  h2:
+    console:
+      enabled: true
+      path: /h2-console
