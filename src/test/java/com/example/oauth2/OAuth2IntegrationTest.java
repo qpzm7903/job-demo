@@ -11,6 +11,8 @@ import java.io.IOException;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.Map;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -84,5 +86,46 @@ class OAuth2IntegrationTest {
         assertThat(conn.getResponseCode()).isEqualTo(HttpStatus.FOUND.value());
         String location = conn.getHeaderField("Location");
         assertThat(location).contains("/login");
+    }
+
+    @Test
+    void jwksEndpoint_hasCacheControlHeader() throws IOException {
+        URL url = new URL(restTemplate.getRootUri() + "/oauth2/jwks");
+        HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+        conn.setRequestMethod("GET");
+        conn.connect();
+        assertThat(conn.getResponseCode()).isEqualTo(HttpStatus.OK.value());
+
+        String cacheControl = conn.getHeaderField("Cache-Control");
+        assertThat(cacheControl).isNotNull();
+        assertThat(cacheControl).contains("public");
+
+        int maxAge = extractMaxAge(cacheControl);
+        assertThat(maxAge).isGreaterThanOrEqualTo(600);
+    }
+
+    @Test
+    void tokenEndpoint_hasNoCacheHeader() throws IOException {
+        URL url = new URL(restTemplate.getRootUri() + "/oauth2/token");
+        HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+        conn.setRequestMethod("POST");
+        conn.setRequestProperty("Content-Type", "application/x-www-form-urlencoded");
+        String encoded = Base64.getEncoder().encodeToString("demo-client:demo-secret".getBytes());
+        conn.setRequestProperty("Authorization", "Basic " + encoded);
+        conn.setDoOutput(true);
+        conn.getOutputStream().write("grant_type=client_credentials&scope=read".getBytes());
+        conn.connect();
+        assertThat(conn.getResponseCode()).isEqualTo(HttpStatus.OK.value());
+
+        String cacheControl = conn.getHeaderField("Cache-Control");
+        assertThat(cacheControl).doesNotContain("public");
+    }
+
+    private static int extractMaxAge(String cacheControl) {
+        Matcher matcher = Pattern.compile("max-age=(\\d+)").matcher(cacheControl);
+        if (matcher.find()) {
+            return Integer.parseInt(matcher.group(1));
+        }
+        return -1;
     }
 }

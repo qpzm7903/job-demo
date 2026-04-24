@@ -29,7 +29,14 @@ import org.springframework.security.oauth2.server.authorization.token.OAuth2Toke
 import org.springframework.security.provisioning.InMemoryUserDetailsManager;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.LoginUrlAuthenticationEntryPoint;
+import org.springframework.security.web.header.HeaderWriterFilter;
+import org.springframework.web.filter.OncePerRequestFilter;
 
+import jakarta.servlet.FilterChain;
+import jakarta.servlet.ServletException;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
+import java.io.IOException;
 import java.security.KeyPair;
 import java.security.KeyPairGenerator;
 import java.security.interfaces.RSAPrivateKey;
@@ -55,6 +62,8 @@ public class SecurityConfig {
         http.exceptionHandling(exceptions -> exceptions
                 .authenticationEntryPoint(new LoginUrlAuthenticationEntryPoint("/login"))
         );
+        // 为 JWKS 端点添加缓存控制头，在 HeaderWriterFilter 之后执行以覆盖其默认值
+        http.addFilterAfter(jwksCacheHeaderFilter(), HeaderWriterFilter.class);
         return http.build();
     }
 
@@ -159,6 +168,29 @@ public class SecurityConfig {
         } catch (Exception ex) {
             throw new IllegalStateException("RSA 密钥对生成失败", ex);
         }
+    }
+
+    /**
+     * 为 /oauth2/jwks 端点添加 HTTP 缓存控制头。
+     * 在 HeaderWriterFilter 之后执行，确保覆盖默认的安全缓存头。
+     */
+    private static OncePerRequestFilter jwksCacheHeaderFilter() {
+        return new OncePerRequestFilter() {
+            @Override
+            protected void doFilterInternal(HttpServletRequest request,
+                                            HttpServletResponse response,
+                                            FilterChain chain)
+                    throws ServletException, IOException {
+                response.setHeader("Cache-Control", "public, max-age=3600");
+                response.setHeader("Vary", "Accept");
+                chain.doFilter(request, response);
+            }
+
+            @Override
+            protected boolean shouldNotFilter(HttpServletRequest request) {
+                return !"/oauth2/jwks".equals(request.getRequestURI());
+            }
+        };
     }
 
     @Bean
