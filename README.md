@@ -2,7 +2,7 @@
 
 基于 Spring Authorization Server 构建的 OAuth2 授权服务。
 
-## 当前版本：v0.5.0
+## 当前版本：v0.5.1
 
 ### 能做什么
 - Spring Boot 3.2.x 应用可启动
@@ -19,7 +19,7 @@
 
 ```bash
 mvn clean package -DskipTests
-java -jar target/oauth2-server-0.5.0.jar
+java -jar target/oauth2-server-0.5.1.jar
 ```
 
 ### 运行测试
@@ -54,6 +54,7 @@ curl http://localhost:8080/oauth2/jwks
 
 | 版本 | 说明 |
 |------|------|
+| v0.5.1 | 修复测试健壮性：bad credentials 测试改为直接验证 401 状态码 |
 | v0.5.0 | 补单元测试 + JaCoCo 覆盖率 >= 60% |
 | v0.4.0 | 授权码流程 + Thymeleaf 登录页 + Refresh Token |
 | v0.3.0 | 显式 JWT 定制 + Token 设置 + /oauth2/jwks 端点 |

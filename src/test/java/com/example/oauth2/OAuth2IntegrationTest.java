@@ -5,8 +5,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.web.client.TestRestTemplate;
 import org.springframework.http.*;
-import org.springframework.util.LinkedMultiValueMap;
-import org.springframework.util.MultiValueMap;
+import java.util.Base64;
 
 import java.io.IOException;
 import java.net.HttpURLConnection;
@@ -14,7 +13,6 @@ import java.net.URL;
 import java.util.Map;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 class OAuth2IntegrationTest {
@@ -53,16 +51,18 @@ class OAuth2IntegrationTest {
     }
 
     @Test
-    void clientCredentialsWithBadSecretShouldFail() {
-        HttpHeaders headers = new HttpHeaders();
-        headers.setBasicAuth("demo-client", "wrong-secret");
-        headers.setContentType(MediaType.APPLICATION_FORM_URLENCODED);
-        HttpEntity<String> request = new HttpEntity<>("grant_type=client_credentials&scope=read", headers);
-
-        // 当 Basic 认证失败时，Java HttpURLConnection 在流模式下无法重试，抛出 ResourceAccessException
-        assertThatThrownBy(() ->
-                restTemplate.exchange("/oauth2/token", HttpMethod.POST, request, Map.class)
-        ).isInstanceOf(org.springframework.web.client.ResourceAccessException.class);
+    void clientCredentialsWithBadSecretShouldReturn401() throws IOException {
+        // 使用 HttpURLConnection 直接验证 401，避免 RestTemplate 的 HttpURLConnection 流式认证重试问题
+        URL url = new URL(restTemplate.getRootUri() + "/oauth2/token");
+        HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+        conn.setRequestMethod("POST");
+        conn.setRequestProperty("Content-Type", "application/x-www-form-urlencoded");
+        String encoded = Base64.getEncoder().encodeToString("demo-client:wrong-secret".getBytes());
+        conn.setRequestProperty("Authorization", "Basic " + encoded);
+        conn.setDoOutput(true);
+        conn.getOutputStream().write("grant_type=client_credentials&scope=read".getBytes());
+        conn.connect();
+        assertThat(conn.getResponseCode()).isEqualTo(HttpStatus.UNAUTHORIZED.value());
     }
 
     @Test

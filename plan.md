@@ -9,6 +9,7 @@
 | v0.3.0 | 支持 `client_credentials` 授权流；JWT Token；`/oauth2/jwks` | ✅ 已完成 |
 | v0.4.0 | 支持 `authorization_code` 授权流 + 最简登录页（Thymeleaf） | ✅ 已完成 |
 | v0.5.0 | 为核心 Service / Controller 补单元测试，覆盖率 >= 60% | ✅ 已完成 |
+| v0.5.1 | 修复测试健壮性：bad credentials 改为直接验证 401 状态码 | ✅ 已完成 |
 
 ## 技术栈
 
