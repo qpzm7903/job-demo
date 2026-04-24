@@ -1,8 +1,10 @@
 # OAuth2 授权服务器
 
+[![Maven CI](https://github.com/your-org/oauth2-server/actions/workflows/maven.yml/badge.svg)](https://github.com/your-org/oauth2-server/actions/workflows/maven.yml)
+
 基于 Spring Authorization Server 构建的 OAuth2 授权服务。
 
-## 当前版本：v0.5.2
+## 当前版本：v0.5.3
 
 ### 能做什么
 - Spring Boot 3.2.x 应用可启动
@@ -19,7 +21,7 @@
 
 ```bash
 mvn clean package -DskipTests
-java -jar target/oauth2-server-0.5.2.jar
+java -jar target/oauth2-server-0.5.3.jar
 ```
 
 ### 运行测试
@@ -54,6 +56,7 @@ curl http://localhost:8080/oauth2/jwks
 
 | 版本 | 说明 |
 |------|------|
+| v0.5.3 | 添加 CI badge 到 README |
 | v0.5.2 | 新增 GitHub Actions CI 工作流 |
 | v0.5.1 | 修复测试健壮性：bad credentials 测试改为直接验证 401 状态码 |
 | v0.5.0 | 补单元测试 + JaCoCo 覆盖率 >= 60% |
