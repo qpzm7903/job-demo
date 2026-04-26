@@ -1,41 +1,57 @@
 # job-demo
 
-OAuth2 Server 示例项目 — 用于 AI Agent Pipeline 冒烟测试，验证 Skills 注入与 Settings 权限预配置。
+OAuth2 授权服务器示例项目，基于 Spring Boot 3.2 + Spring Authorization Server 1.x。
 
-## 时间戳
+## 当前版本: v0.7.0
 
-2026-04-26 04:07:31 UTC
+## 功能概览
 
-## 项目结构
+| 版本 | 功能 |
+|------|------|
+| v0.3.0 | `client_credentials` 授权流 + JWT Token + `/oauth2/jwks` |
+| v0.4.0 | `authorization_code` 授权流 + 登录页 |
+| v0.5.0 | 单元测试覆盖率 >= 60% |
+| v0.6.0 | 客户端管理 API (`/admin/clients`)，JPA 持久化，Bearer 鉴权 |
+| v0.7.0 | Token 自省端点（RFC 7662 `POST /oauth2/introspect`） |
 
-- **语言/框架**: Java + Spring Boot + Spring Security OAuth2
-- **构建工具**: Maven (`pom.xml`)
-- **CI/CD**: GitHub Actions (`.github/workflows/maven.yml`)
+## 技术栈
 
-## 仓库文件列表
+- JDK 17 + Maven
+- Spring Boot 3.2.x
+- Spring Authorization Server 1.x
+- H2 内存数据库
+- JUnit 5 + Spring Boot Test
 
+## 构建与运行
+
+```bash
+mvn clean package -DskipTests
+java -jar target/oauth2-server-*.jar
 ```
-.agent-context/api-contracts.md
-.agent-context/consumes.md
-.agent-context/critical-flows.md
-.agent-context/domain-glossary.md
-.agent-context/entity-graph.md
-.agent-context/module-map.md
-.agent-context/pitfalls.md
-.github/workflows/maven.yml
-.gitignore
-README.md
-docs/refactor-review-20260424.md
-plan.md
-pom.xml
-prompt.md
-smoke-test-result.md
-src/main/java/com/example/oauth2/Oauth2ServerApplication.java
-src/main/java/com/example/oauth2/config/SecurityConfig.java
-src/main/java/com/example/oauth2/controller/HelloController.java
-src/main/java/com/example/oauth2/controller/LoginController.java
-src/main/resources/application.yml
-src/main/resources/templates/login.html
-src/test/java/com/example/oauth2/OAuth2IntegrationTest.java
-src/test/java/com/example/oauth2/Oauth2ServerApplicationTests.java
+
+## API 端点
+
+| 端点 | 说明 |
+|------|------|
+| `GET /hello` | 公开端点 |
+| `POST /oauth2/token` | Token 端点（client_credentials / authorization_code） |
+| `GET /oauth2/jwks` | JWK 集端点 |
+| `GET /oauth2/authorize` | 授权码流程端点 |
+| `POST /oauth2/introspect` | Token 自省端点（RFC 7662） |
+| `POST /admin/clients` | 注册新客户端（需 Bearer token） |
+| `GET /admin/clients` | 列出客户端（需 Bearer token） |
+| `DELETE /admin/clients/{id}` | 删除客户端（需 Bearer token） |
+
+## 快速验证
+
+```bash
+# 获取 access_token
+curl -X POST http://localhost:8080/oauth2/token \
+  -u demo-client:demo-secret \
+  -d "grant_type=client_credentials&scope=read"
+
+# 自省 token
+curl -X POST http://localhost:8080/oauth2/introspect \
+  -u demo-client:demo-secret \
+  -d "token=<your-access-token>"
 ```
