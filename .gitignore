@@ -9,3 +9,6 @@ target/
 *.swp
 *.swo
 *~
+
+# Pipeline-injected Skills (do not commit)
+.claude/skills/

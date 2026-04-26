@@ -1,10 +1,16 @@
 # job-demo
 
-这是一个用于 AI Agent Pipeline 冒烟测试的仓库
+OAuth2 Server 示例项目 — 用于 AI Agent Pipeline 冒烟测试，验证 Skills 注入与 Settings 权限预配置。
 
 ## 时间戳
 
-2026-04-26 02:51:02 UTC
+2026-04-26 04:07:31 UTC
+
+## 项目结构
+
+- **语言/框架**: Java + Spring Boot + Spring Security OAuth2
+- **构建工具**: Maven (`pom.xml`)
+- **CI/CD**: GitHub Actions (`.github/workflows/maven.yml`)
 
 ## 仓库文件列表
 
