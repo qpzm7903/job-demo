@@ -1,5 +1,8 @@
 package com.example.oauth2.config;
 
+import com.example.oauth2.entity.Client;
+import com.example.oauth2.repository.ClientRepository;
+import com.example.oauth2.repository.JpaRegisteredClientRepository;
 import com.nimbusds.jose.jwk.JWKSet;
 import com.nimbusds.jose.jwk.RSAKey;
 import com.nimbusds.jose.jwk.source.JWKSource;
@@ -16,7 +19,6 @@ import org.springframework.security.oauth2.core.AuthorizationGrantType;
 import org.springframework.security.oauth2.core.ClientAuthenticationMethod;
 import org.springframework.security.oauth2.jwt.JwtClaimsSet;
 import org.springframework.security.oauth2.server.authorization.OAuth2TokenType;
-import org.springframework.security.oauth2.server.authorization.client.InMemoryRegisteredClientRepository;
 import org.springframework.security.oauth2.server.authorization.client.RegisteredClient;
 import org.springframework.security.oauth2.server.authorization.client.RegisteredClientRepository;
 import org.springframework.security.oauth2.server.authorization.config.annotation.web.configuration.OAuth2AuthorizationServerConfiguration;
@@ -68,10 +70,26 @@ public class SecurityConfig {
     }
 
     /**
-     * 默认安全过滤链：/hello、/login、/h2-console 公开访问，其余需认证
+     * 管理端点安全过滤链：/admin/clients 仅接受 Bearer token 认证
      */
     @Bean
     @Order(2)
+    public SecurityFilterChain adminSecurityFilterChain(HttpSecurity http)
+            throws Exception {
+        http.securityMatcher("/admin/clients/**")
+                .authorizeHttpRequests(authorize -> authorize
+                        .anyRequest().authenticated()
+                )
+                .oauth2ResourceServer(oauth2 -> oauth2.jwt(Customizer.withDefaults()))
+                .csrf(csrf -> csrf.ignoringRequestMatchers("/admin/clients/**"));
+        return http.build();
+    }
+
+    /**
+     * 默认安全过滤链：/hello、/login、/h2-console 公开访问，其余需表单登录认证
+     */
+    @Bean
+    @Order(3)
     public SecurityFilterChain defaultSecurityFilterChain(HttpSecurity http)
             throws Exception {
         http.authorizeHttpRequests(authorize -> authorize
@@ -90,11 +108,10 @@ public class SecurityConfig {
     }
 
     /**
-     * 注册内存中的 OAuth2 客户端（demo-client）
-     * 支持 client_credentials 和 authorization_code 两种授权流
+     * 基于 JPA 的客户端仓库，启动时初始化 demo-client
      */
     @Bean
-    public RegisteredClientRepository registeredClientRepository() {
+    public RegisteredClientRepository registeredClientRepository(ClientRepository clientRepository) {
         RegisteredClient demoClient = RegisteredClient.withId(UUID.randomUUID().toString())
                 .clientId("demo-client")
                 .clientSecret("{noop}demo-secret")
@@ -114,7 +131,15 @@ public class SecurityConfig {
                         .requireAuthorizationConsent(false)
                         .build())
                 .build();
-        return new InMemoryRegisteredClientRepository(demoClient);
+
+        JpaRegisteredClientRepository repo = new JpaRegisteredClientRepository(clientRepository);
+
+        // 启动时初始化 demo-client（如数据库中尚无此客户端）
+        if (clientRepository.findByClientId("demo-client").isEmpty()) {
+            repo.save(demoClient);
+        }
+
+        return repo;
     }
 
     /**
