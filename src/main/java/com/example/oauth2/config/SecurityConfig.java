@@ -18,7 +18,10 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.oauth2.core.AuthorizationGrantType;
 import org.springframework.security.oauth2.core.ClientAuthenticationMethod;
 import org.springframework.security.oauth2.jwt.JwtClaimsSet;
+import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.security.oauth2.server.authorization.OAuth2AuthorizationService;
 import org.springframework.security.oauth2.server.authorization.OAuth2TokenType;
+import org.springframework.security.oauth2.server.authorization.JdbcOAuth2AuthorizationService;
 import org.springframework.security.oauth2.server.authorization.client.RegisteredClient;
 import org.springframework.security.oauth2.server.authorization.client.RegisteredClientRepository;
 import org.springframework.security.oauth2.server.authorization.config.annotation.web.configuration.OAuth2AuthorizationServerConfiguration;
@@ -140,6 +143,16 @@ public class SecurityConfig {
         }
 
         return repo;
+    }
+
+    /**
+     * 基于 JDBC 的授权信息存储，用于持久化 OAuth2Authorization（含 refresh_token）
+     */
+    @Bean
+    public OAuth2AuthorizationService authorizationService(
+            JdbcTemplate jdbcTemplate,
+            RegisteredClientRepository registeredClientRepository) {
+        return new JdbcOAuth2AuthorizationService(jdbcTemplate, registeredClientRepository);
     }
 
     /**
