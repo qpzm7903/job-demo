@@ -15,6 +15,7 @@
 | v0.5.4 | 修复 README CI badge URL 为实际仓库地址 | ✅ 已完成 |
 | v0.5.5 | 增强开发配置与忽略文件规则 | ✅ 已完成 |
 | v0.5.6 | 完善开发体验：H2 控制台安全配置、显式数据源、.gitignore 清理 | ✅ 已完成 |
+| v0.6.0 | 客户端管理 API（POST/GET/DELETE /admin/clients，JPA 持久化，Bearer 鉴权） | ✅ 已完成 |
 
 ## 技术栈
 
@@ -39,3 +40,6 @@ java -jar target/oauth2-server-*.jar
 | v0.2.0 | `POST /oauth2/token` | Token 端点（client_credentials） |
 | v0.3.0 | `GET /oauth2/jwks` | JWK 集端点 |
 | v0.4.0 | `GET /oauth2/authorize` | 授权码流程端点 |
+| v0.6.0 | `POST /admin/clients` | 注册新 OAuth2 客户端 |
+| v0.6.0 | `GET /admin/clients` | 列出已注册客户端 |
+| v0.6.0 | `DELETE /admin/clients/{id}` | 删除客户端 |
