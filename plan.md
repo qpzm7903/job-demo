@@ -16,6 +16,7 @@
 | v0.5.5 | 增强开发配置与忽略文件规则 | ✅ 已完成 |
 | v0.5.6 | 完善开发体验：H2 控制台安全配置、显式数据源、.gitignore 清理 | ✅ 已完成 |
 | v0.6.0 | 客户端管理 API（POST/GET/DELETE /admin/clients，JPA 持久化，Bearer 鉴权） | ✅ 已完成 |
+| v0.7.0 | Token 自省端点（RFC 7662 POST /oauth2/introspect，返回 active/sub/scope/exp） | ✅ 已完成 |
 
 ## 技术栈
 
@@ -43,3 +44,4 @@ java -jar target/oauth2-server-*.jar
 | v0.6.0 | `POST /admin/clients` | 注册新 OAuth2 客户端 |
 | v0.6.0 | `GET /admin/clients` | 列出已注册客户端 |
 | v0.6.0 | `DELETE /admin/clients/{id}` | 删除客户端 |
+| v0.7.0 | `POST /oauth2/introspect` | Token 自省端点（RFC 7662） |
