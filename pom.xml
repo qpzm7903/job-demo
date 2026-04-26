@@ -13,7 +13,7 @@
 
     <groupId>com.example</groupId>
     <artifactId>oauth2-server</artifactId>
-    <version>0.8.0</version>
+    <version>0.9.0</version>
     <name>oauth2-server</name>
     <description>OAuth2 授权服务器</description>
 

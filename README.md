@@ -2,7 +2,7 @@
 
 OAuth2 授权服务器示例项目，基于 Spring Boot 3.2 + Spring Authorization Server 1.x。
 
-## 当前版本: v0.8.0
+## 当前版本: v0.9.0
 
 ## 功能概览
 
@@ -13,6 +13,7 @@ OAuth2 授权服务器示例项目，基于 Spring Boot 3.2 + Spring Authorizati
 | v0.6.0 | 客户端管理 API (`/admin/clients`)，JPA 持久化，Bearer 鉴权 |
 | v0.7.0 | Token 自省端点（RFC 7662 `POST /oauth2/introspect`） |
 | v0.8.0 | Refresh Token 流（authorization_code 签发 + grant_type=refresh_token 换发） |
+| v0.9.0 | Token 吊销端点（RFC 7009 `POST /oauth2/revoke`） |
 
 ## 技术栈
 
@@ -38,6 +39,7 @@ java -jar target/oauth2-server-*.jar
 | `GET /oauth2/jwks` | JWK 集端点 |
 | `GET /oauth2/authorize` | 授权码流程端点 |
 | `POST /oauth2/introspect` | Token 自省端点（RFC 7662） |
+| `POST /oauth2/revoke` | Token 吊销端点（RFC 7009） |
 | `POST /admin/clients` | 注册新客户端（需 Bearer token） |
 | `GET /admin/clients` | 列出客户端（需 Bearer token） |
 | `DELETE /admin/clients/{id}` | 删除客户端（需 Bearer token） |
@@ -59,4 +61,9 @@ curl -X POST http://localhost:8080/oauth2/introspect \
 curl -X POST http://localhost:8080/oauth2/token \
   -u demo-client:demo-secret \
   -d "grant_type=refresh_token&refresh_token=<your-refresh-token>"
+
+# 吊销 token
+curl -X POST http://localhost:8080/oauth2/revoke \
+  -u demo-client:demo-secret \
+  -d "token=<your-access-token>"
 ```
